@@ -49,7 +49,7 @@ const Book = mongoose.model("book", bookSchema);
 
 app.get("/section", async (req, res) => {
   try {
-    const users = await User.find().lean().exec();
+    const section = await User.find().lean().exec();
 
     return res.status(200).send({ users: users });
   } catch (err) {
@@ -59,18 +59,18 @@ app.get("/section", async (req, res) => {
 
 app.post("/section", async (req, res) => {
   try {
-    const user = await User.create(req.body);
+    const section = await User.create(req.body);
 
-    return res.status(201).send(user);
+    return res.status(201).send(section);
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
 });
 app.get("/book", async (req, res) => {
   try {
-    const users = await Book.find().lean().exec();
+    const books = await Book.find().lean().exec();
 
-    return res.status(200).send({ users: users });
+    return res.status(200).send({ books: books });
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
@@ -78,9 +78,9 @@ app.get("/book", async (req, res) => {
 
 app.post("/book", async (req, res) => {
   try {
-    const user = await Book.create(req.body);
+    const books = await Book.create(req.body);
 
-    return res.status(201).send(user);
+    return res.status(201).send(books);
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
