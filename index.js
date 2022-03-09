@@ -51,7 +51,7 @@ app.get("/section", async (req, res) => {
   try {
     const section = await User.find().lean().exec();
 
-    return res.status(200).send({ users: users });
+    return res.status(200).send({ section: section });
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
