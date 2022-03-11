@@ -7,7 +7,7 @@ app.use(express.json());
 
 const connect = () => {
   return mongoose.connect(
-    "mongodb+srv://Mahesh:m9024731575j@cluster0.t9tfc.mongodb.net/web15_atlas?retryWrites=true&w=majority"
+    "mongodb+srv://Mahesh:m9024731575j@cluster0.t9tfc.mongodb.net/Library?retryWrites=true&w=majority"
   );
 };
 
@@ -25,7 +25,7 @@ const sectionSchema = new mongoose.Schema(
 );
 
 // Step 2 : creating the model
-const User = mongoose.model("section", sectionSchema);
+const Sections = mongoose.model("section", sectionSchema);
 
 // BOOK SCHEMA
 
@@ -45,11 +45,26 @@ const bookSchema = new mongoose.Schema(
   }
 );
 
-const Book = mongoose.model("book", bookSchema);
+const Books = mongoose.model("book", bookSchema);
+const CheckedOutSchema = new mongoose.Schema(
+  {
+    BookId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "book",
+      checkedOutTime: { type: Boolean, default: null },
+    },
+  },
+  {
+    versionKey: false,
+    timestamps: true,
+  }
+);
+
+const IsChecked = mongoose.model("checked", CheckedOutSchema);
 
 app.get("/section", async (req, res) => {
   try {
-    const section = await User.find().lean().exec();
+    const section = await Sections.find().lean().exec();
 
     return res.status(200).send({ section: section });
   } catch (err) {
@@ -59,7 +74,7 @@ app.get("/section", async (req, res) => {
 
 app.post("/section", async (req, res) => {
   try {
-    const section = await User.create(req.body);
+    const section = await Sections.create(req.body);
 
     return res.status(201).send(section);
   } catch (err) {
@@ -68,7 +83,7 @@ app.post("/section", async (req, res) => {
 });
 app.get("/book", async (req, res) => {
   try {
-    const books = await Book.find().lean().exec();
+    const books = await Books.find().lean().exec();
 
     return res.status(200).send({ books: books });
   } catch (err) {
@@ -78,9 +93,18 @@ app.get("/book", async (req, res) => {
 
 app.post("/book", async (req, res) => {
   try {
-    const books = await Book.create(req.body);
+    const books = await Books.create(req.body);
 
     return res.status(201).send(books);
+  } catch (err) {
+    return res.status(500).send({ message: err.message });
+  }
+});
+app.get("/ischecked/:BookId", async (req, res) => {
+  try {
+    const books = await Books.findById(req.params.BookId).lean().exec();
+
+    return res.status(200).send({ books: books });
   } catch (err) {
     return res.status(500).send({ message: err.message });
   }
